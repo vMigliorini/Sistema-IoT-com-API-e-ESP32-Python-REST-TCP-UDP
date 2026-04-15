@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+        <link rel="stylesheet" href="static/style.css">
+        <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+        <title>Cadastro</title>
+    </head>
+    <body>
+        
+        <form id="form-cadastro">
+            <div class="container-principal">
+
+                <div class="container-cadastro">
+
+                    <div class="container-titulo">
+                        Cadastro
+                    </div>
+                    
+                    <div class="container-input">
+
+                        <div class="container-placeholder" id="input-nome">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" name="nome" placeholder="Nome completo">
+                        </div>
+
+                        <div class="container-placeholder" id="input-email">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" name="email" placeholder="Email">
+                        </div>
+
+                        <div class="container-placeholder" id="input-senha">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" name="senha" placeholder="Senha">
+                        </div> 
+
+                        <div class="container-placeholder" id="input-confirmacao-senha">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" name="confirmacao-senha" placeholder="Confirmação da senha">
+                        </div>
+
+                    </div>
+
+                    <div class="container-retorno" >
+                        <div class="retorno-dados-incorretos" id="retorno-dados-incorretos">
+                                
+                        </div>
+                    </div>
+
+                    <div class="container-botao">
+                        <button id="botao-cadastro" type="button" onclick="cadastrar()">Cadastrar</button>
+                    </div>
+                    <div class="link-cadastro">
+                        <p>já tem uma conta? <a href="{{ url_for('login') }}">entre</a></p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </body>
+</html>
