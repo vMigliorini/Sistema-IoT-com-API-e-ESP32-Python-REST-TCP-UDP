@@ -1,18 +1,24 @@
 from flask import Flask
-from extensions import db, Bcrypt
 from flask_cors import CORS
+from extensions import db, bcrypt
+from views import views_bp
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://neondb_owner:npg_nQasPZdpo9A6@ep-odd-scene-acsy6w3o.sa-east-1.aws.neon.tech/neondb?sslmode=require"
-bcrypt = Bcrypt(app)
 
-from models import Usuario, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://neondb_owner:npg_nQasPZdpo9A6@ep-odd-scene-acsy6w3o.sa-east-1.aws.neon.tech/neondb?sslmode=require"
+
+CORS(app)
+
+db.init_app(app)
+bcrypt.init_app(app)
+
+app.register_blueprint(views_bp)
+
 
 with app.app_context():
+    from models import Usuario, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP
     db.create_all()
-    print("Tabelas criadas no Neon com sucesso!")
 
-from views import *
 
 if __name__ == "__main__":
     app.run()

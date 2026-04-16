@@ -49,10 +49,10 @@
                     </div>
 
                     <div class="container-botao">
-                        <button id="botao-cadastro" type="button" onclick="cadastrar()">Cadastrar</button>
+                        <button id="botao-cadastro" type="button" onclick="cadastrar(event)">Cadastrar</button>
                     </div>
                     <div class="link-cadastro">
-                        <p>já tem uma conta? <a href="{{ url_for('login') }}">entre</a></p>
+                        <p>já tem uma conta? <a href="{{ url_for('views.login') }}">entre</a></p>
                     </div>
 
                 </div>

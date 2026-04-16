@@ -1,8 +1,7 @@
-async function cadastrar(){
+async function cadastrar(event){
+    event.preventDefault();
     var form = document.getElementById("form-cadastro")
     var form_dados = new FormData(form)
-
-    const dados = Object.fromEntries(form_dados);
     
     const nome = form_dados.get('nome')
     const email = form_dados.get('email')
@@ -49,4 +48,41 @@ async function cadastrar(){
     const data = await response.json()
     console.log(data)
 
+}
+
+async function logar(event){
+    event.preventDefault();
+    var form = document.getElementById("form-login")
+    var form_dados = new FormData(form)
+
+    const email = form_dados.get('email')
+    const senha = form_dados.get('senha')
+
+    const response = await fetch("http://localhost:5000/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            senha: senha
+        })
+    })
+
+    const data = await response.json()
+    if (data.ok){
+        window.location.href = URL_HOMEPAGE
+    }else{
+        document.getElementById("retorno-dados-incorretos").innerHTML = `
+        <div class="container-retorno" >
+            <div class="retorno-dados-incorretos" id="retorno-dados-incorretos">
+                ${data.erro}
+            </div>
+        </div>
+        `
+    }
+
+    
+    
+    
 }
