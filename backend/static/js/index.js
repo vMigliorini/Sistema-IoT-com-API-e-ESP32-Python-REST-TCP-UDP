@@ -58,6 +58,27 @@ async function logar(event){
     const email = form_dados.get('email')
     const senha = form_dados.get('senha')
 
+    const erros = ["Erro! Preencha todos os campos", "Erro! Email fora de padrão"]
+
+    let mensagem = ""
+
+
+    if (email == "" || senha == ""){
+        mensagem = erros[0]
+    }
+    else if (!email.includes("@") || !email.includes(".com")){
+        mensagem = erros[1]
+    }
+    
+    if (mensagem != ""){
+        document.getElementById("retorno-dados-incorretos").innerHTML = `
+            <div class="retorno-dados-incorretos">
+                ${mensagem}
+            </div>
+        `
+        return
+    }
+
     const response = await fetch("http://localhost:5000/", {
         method: "POST",
         headers: {
