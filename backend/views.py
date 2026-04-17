@@ -7,9 +7,9 @@ from sqlalchemy import select
 views_bp = Blueprint('views', __name__)
 
 #rotas
-@views_bp.route("/homepage")
-def homepage():
-    return render_template("homepage.html")
+@views_bp.route("/chat_rooms")
+def chat_rooms():
+    return render_template("chat_rooms.html")
 
 @views_bp.route("/", methods=["GET", "POST"])
 def login():

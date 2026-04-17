@@ -92,7 +92,7 @@ async function logar(event){
 
     const data = await response.json()
     if (data.ok){
-        window.location.href = URL_HOMEPAGE
+        window.location.href = URL_ROOMS
     }else{
         document.getElementById("retorno-dados-incorretos").innerHTML = `
         <div class="container-retorno" >

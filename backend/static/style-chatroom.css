@@ -1,0 +1,299 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Isso resolve o seu problema */
+}
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;   
+    margin: 0;
+    min-height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top left, #4facfe, transparent),
+                linear-gradient(135deg, #007bff, #003f7f);
+}
+
+button {
+  background: none;        /* Remove a cor de fundo */
+  border: none;            /* Remove a borda */
+  padding: 0;              /* Remove o espaçamento interno padrão */
+  cursor: pointer;         /* Adiciona a "mãozinha" ao passar o mouse */
+  outline: inherit;        /* Garante que o contorno de acessibilidade siga o padrão */
+}
+
+.container-principal {
+    display: flex;
+    height: 100svh;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-secao-esquerda-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgb(68, 68, 68);
+    border: solid black 1px;
+    
+    height: 100%;
+    width: 15%;
+}
+
+.container-secao-direita-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    background-color: rgb(51, 51, 51);
+    
+    height: 100%;
+    width: 75%;
+    padding: 15px;
+}
+
+.container-secao-usuarios-conectados-chat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgb(68, 68, 68);
+    height: 100%;
+    width: 10%;
+    padding: 10px;
+}
+
+.container-perfil {
+    height: 15%;
+    width: 100%;
+    border-bottom: solid black 1px;
+    color: rgb(28, 30, 63);
+    background-color: rgb(146, 146, 146);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.nome-cargo {
+    color: rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.nome {
+    width: 100%;
+    text-align: left;
+}
+
+.cargo {
+    width: 100%;
+    text-align: left;
+}
+
+.foto {
+    font-size: 70px;
+}
+
+.container-multi-chats {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    height: 800px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 30px;
+    padding-top: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    gap: 10px;
+    width: 100%;
+}
+
+.container-chat-individual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(146, 146, 146);
+    border-radius: 8px;
+    gap: 10px;
+    height: 75px;
+    width: 90%;
+}
+
+.chat-room {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 75px;
+    gap: 10px;
+}
+
+.informacoes-chatroom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    width: 60%;
+    text-align: left;
+    gap: 5px;
+    padding-left: 10px;
+}
+
+.titulo-chatroom {
+    width: 100%;
+}
+
+.participantes-chatroom {
+    width: 100%;
+}
+
+.icone-entrar-chatroom{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    width: 40%;
+}
+
+.icone-entrar-chatroom i {
+    font-size: 50px;
+    color: rgb(46, 46, 46);
+}
+
+.container-novo-chat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-top: solid gray 1px;
+    height: 10%;
+    width: 80%;
+}
+
+.figura {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.figura i{
+    font-size: 20px;
+    color: rgb(27, 27, 27);
+}
+
+.container-dispositivos-conectados {
+    display: flex;
+    align-items: center;
+    justify-content:flex-start;
+    width: 100%;
+    height: 5%;
+    border-radius: 8px;
+    gap: 20px;
+    background-color: rgb(80, 80, 80);
+}
+
+.dispositivo-informacoes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    height: 80%;
+    gap: 5px;
+    color: rgb(252, 246, 231);
+    border-right: solid rgb(168, 168, 168) 1px;
+
+}
+
+.container-chat {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 10px;
+    height: 806px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.mensagem {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 15px;
+    width: 100%;
+    height: 60px;
+}
+
+.icone-user i {
+    font-size: 50px;
+}
+
+.conteudo-mensagem {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    flex-direction: column;
+    width: 100%;
+}
+
+.nome-autor {
+    font-size: large;
+    color: purple;
+    text-align: left;
+    width: 100%;
+}
+
+.texto-autor {
+    font-size: large;
+    color:whitesmoke;
+    text-align: left;
+    width: 100%;
+}
+
+
+
+
+
+.container-input-mensagem {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 15px;
+    padding-left: 30px;
+    align-items: center;
+    height: 6%;
+    width: 100%;
+    background-color: rgb(80, 80, 80);
+    border-radius: 8px;
+}
+
+.input-mensagem {
+    flex-grow: 1;    
+    display: flex;       
+}
+
+.input-mensagem input{
+    background: transparent;
+    font-size: 1.2rem;
+    width: 99%;
+    box-sizing: border-box;
+    border: none;            
+    outline: none;           
+    padding: 0;              
+    box-shadow: none;
+}
+
+.botao-enviar i {
+    font-size: 30px;
+    color: rgb(19, 19, 19);
+}
