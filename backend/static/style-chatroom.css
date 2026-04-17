@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Isso resolve o seu problema */
+    box-sizing: border-box;
 }
 
 body {
@@ -16,11 +16,11 @@ body {
 }
 
 button {
-  background: none;        /* Remove a cor de fundo */
-  border: none;            /* Remove a borda */
-  padding: 0;              /* Remove o espaçamento interno padrão */
-  cursor: pointer;         /* Adiciona a "mãozinha" ao passar o mouse */
-  outline: inherit;        /* Garante que o contorno de acessibilidade siga o padrão */
+  background: none;     
+  border: none;   
+  padding: 0;       
+  cursor: pointer;     
+  outline: inherit;    
 }
 
 .container-principal {
@@ -37,7 +37,6 @@ button {
     justify-content: center;
     flex-direction: column;
     background-color: rgb(68, 68, 68);
-    border: solid black 1px;
     
     height: 100%;
     width: 15%;
@@ -49,6 +48,7 @@ button {
     justify-content: flex-start;
     flex-direction: column;
     background-color: rgb(51, 51, 51);
+    border-right: solid gray 1px;
     
     height: 100%;
     width: 75%;
@@ -58,18 +58,18 @@ button {
 .container-secao-usuarios-conectados-chat {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
-    background-color: rgb(68, 68, 68);
-    height: 100%;
+    gap: 20px;
+    background-color: rgb(51, 51, 51);
+    height: 947px;
     width: 10%;
-    padding: 10px;
 }
 
 .container-perfil {
     height: 15%;
     width: 100%;
-    border-bottom: solid black 1px;
+    border-bottom: solid gray 1px;
     color: rgb(28, 30, 63);
     background-color: rgb(146, 146, 146);
     display: flex;
@@ -211,7 +211,7 @@ button {
     height: 80%;
     gap: 5px;
     color: rgb(252, 246, 231);
-    border-right: solid rgb(168, 168, 168) 1px;
+    border-right: solid gray 1px;
 
 }
 
@@ -296,4 +296,51 @@ button {
 .botao-enviar i {
     font-size: 30px;
     color: rgb(19, 19, 19);
+}
+
+.container-usuarios-conectados {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 7%;
+    background-color: rgb(44, 44, 44);;
+}
+
+.titulo-usuarios-conectados {
+    text-align: center;
+    color: whitesmoke;
+}
+.users-usuarios-conectados {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.icone-user-conectados {
+    font-size: 35px;
+}
+
+.informacoes-usuario-conectado {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    height: 947px;
+}
+
+.container-users {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 10px;
+    width: 100%;
+    height: 40px;
+    padding-left: 5px;
 }
