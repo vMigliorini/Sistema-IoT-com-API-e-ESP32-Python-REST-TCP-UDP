@@ -2,12 +2,15 @@ from flask import Flask
 from flask_cors import CORS
 from extensions import db, bcrypt
 from views import views_bp
+import os
 
 app = Flask(__name__)
 
+app.secret_key = os.environ.get('SECRET_KEY', 'chave-so-pra-dev')
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://neondb_owner:npg_nQasPZdpo9A6@ep-odd-scene-acsy6w3o.sa-east-1.aws.neon.tech/neondb?sslmode=require"
 
-CORS(app)
+CORS(app, supports_credentials=True, origins=["http://localhost:5000","http://127.0.0.1:5000"])
 
 db.init_app(app)
 bcrypt.init_app(app)

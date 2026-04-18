@@ -79,6 +79,19 @@ body {
     padding-left: 55px;
 }
 
+.container-placeholder select {
+    border: 0px;
+    border-radius: 4px;
+    background-color: rgb(245, 245, 245);
+    width: 100%;
+    height: 50px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding-left: 55px;
+    appearance: none; /* remove a setinha padrão do browser */
+    cursor: pointer;
+    color: #999;;
+}
+
 .container-placeholder i {
     position: absolute;
     left: 25px;

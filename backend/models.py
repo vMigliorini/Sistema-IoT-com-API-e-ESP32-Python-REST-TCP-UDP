@@ -1,10 +1,20 @@
 from extensions import db  
 from datetime import datetime, timezone
+import enum
+
+
+class CargoEnum(enum.Enum):
+    ENGENHEIRO_CIVIL = "Engenheiro-civil"
+    ENGENHEIRO_SOFTWARE = "Engenheiro-Software"
+    ENGENHEIRO_PRODUCAO = "Engenheiro-producao"
+    PSICOLOGO = "Psicologo"
+    GERENTE_PROJETOS = "Gerente-projetos"
 
 class Usuario(db.Model):
     id         = db.Column(db.Integer, primary_key=True)
     nome       = db.Column(db.String(100))
     email      = db.Column(db.String(120), unique=True)
+    cargo      = db.Column(db.Enum(CargoEnum), nullable=False)
     senha_hash = db.Column(db.String(200))
     mensagens  = db.relationship("ChatMessage", backref="usuario")
 

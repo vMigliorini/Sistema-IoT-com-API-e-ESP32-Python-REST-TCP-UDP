@@ -7,6 +7,7 @@ async function cadastrar(event){
     const email = form_dados.get('email')
     const senha = form_dados.get('senha')
     const confirmacao_senha = form_dados.get('confirmacao-senha')
+    const cargo = form_dados.get('cargos')
 
 
     
@@ -17,7 +18,7 @@ async function cadastrar(event){
     if (senha != confirmacao_senha){
         mensagem = erros[0]
     } 
-    else if (nome == "" || email == ""){
+    else if (nome == "" || email == "" || cargo == ""){
         mensagem = erros[2]
     }
     else if (!email.includes("@") || !email.includes(".com")){
@@ -33,7 +34,7 @@ async function cadastrar(event){
         return
     }
 
-    const response = await fetch("http://localhost:5000/cadastro", {
+    const response = await fetch("/cadastro", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -41,12 +42,22 @@ async function cadastrar(event){
         body: JSON.stringify({
             nome: nome,
             email: email,
-            senha: senha
+            senha: senha,
+            cargo: cargo
         })
     })
 
     const data = await response.json()
-    console.log(data)
+    if (data.ok){
+        window.location.href = data.redirect
+    }else {
+        mensagem = "Erro ao cadastrar usuário"
+        document.getElementById("retorno-dados-incorretos").innerHTML = `
+        <div class="retorno-dados-incorretos">
+            ${mensagem}
+        </div>
+        `
+    }
 
 }
 
@@ -79,8 +90,9 @@ async function logar(event){
         return
     }
 
-    const response = await fetch("http://localhost:5000/", {
+    const response = await fetch("/", {
         method: "POST",
+        credentials: 'include',
         headers: {
             "Content-Type": "application/json"
         },
@@ -92,7 +104,7 @@ async function logar(event){
 
     const data = await response.json()
     if (data.ok){
-        window.location.href = URL_ROOMS
+        window.location.href = data.redirect;
     }else{
         document.getElementById("retorno-dados-incorretos").innerHTML = `
         <div class="container-retorno" >

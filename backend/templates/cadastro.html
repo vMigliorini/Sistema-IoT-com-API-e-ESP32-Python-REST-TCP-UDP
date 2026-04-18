@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
         <link rel="stylesheet" href="static/style-auth.css">
-        <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+        <script defer src="{{ url_for('static', filename='js/auth.js') }}"></script>
         <title>Cadastro</title>
     </head>
     <body>
@@ -23,6 +23,18 @@
                         <div class="container-placeholder" id="input-nome">
                             <i class="fa-regular fa-user"></i>
                             <input type="text" name="nome" placeholder="Nome completo">
+                        </div>
+
+                        <div class="container-placeholder">
+                            <i class="fa-solid fa-wrench"></i>
+                            <select name="cargos" id="input-cargo" >
+                                <option value="" disabled selected>Cargo</option>
+                                <option value="Engenheiro-civil">Engenheiro Civil</option>
+                                <option value="Engenheiro-Software">Engenheiro de Software</option>
+                                <option value="Engenheiro-producao">Engenheiro de Produção</option>
+                                <option value="Psicologo">Psicologo</option>
+                                <option value="Gerente-projetos">Gerente de projetos</option>
+                            </select>
                         </div>
 
                         <div class="container-placeholder" id="input-email">
