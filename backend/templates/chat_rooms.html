@@ -8,6 +8,20 @@
         <script defer src="{{ url_for('static', filename='js/chatroom.js') }}"></script>
         <title>Chat Rooms</title>
     </head>
+
+    <dialog id="pop_up_adiocionar_chat">
+        <div class="pop-up-adiocionar-chat">
+            <h2>Adicionar chat room</h2>
+            <div class="container-inputs-sala">
+                <input name="nome-sala" placeholder="Nome da sala">
+            </div>
+            <div class="container-botoes-popup">
+                <button id="fechar" onclick="fechar_popup_add_chat()">Fechar</button>
+                <button id="criar-sala">Criar sala</button>
+            </div>
+        </div>
+    </dialog>
+
     <body>
         <div class="container-principal">
             
@@ -52,7 +66,7 @@
 
                 <div class="container-novo-chat">
                     <div class="figura">
-                        <button type="button" onclick="adicionar_chat()"><i class="fa-solid fa-circle-plus"></i></button>
+                        <button type="button" onclick="abrir_popup_add_chat()"><i class="fa-solid fa-circle-plus"></i></button>
                     </div>
                     <div class="texto">
                         Adicionar chat
@@ -75,7 +89,7 @@
                     </div>
 
                 </div>
-                <div class="container-chat" id="container-chat">
+                <div class="container-chat">
                     <div class="mensagem">
                         <div class="icone-user">
                             <i class="fa-solid fa-circle-user"></i>
@@ -91,18 +105,14 @@
                     </div>
                 </div>
 
-                <form id="form-mensagem-digitada">
-
-                    <div class="container-input-mensagem">
-                        <div class="input-mensagem">
-                            <input name="mensagem-digitada" name="conteudo-mensagem" placeholder="Conversar">
-                        </div>
-                        <div class="botao-enviar">
-                            <button type="button" onclick="enviar_mensagem()"><i class="fa-solid fa-circle-arrow-up"></i></button>
-                        </div>
+                <div class="container-input-mensagem">
+                    <div class="input-mensagem">
+                        <input name="mensagem-digitada" placeholder="Conversar">
                     </div>
-
-                </form>
+                    <div class="botao-enviar">
+                        <button type="button"><i class="fa-solid fa-circle-arrow-up"></i></button>
+                    </div>
+                </div>
 
             </div>
             <div class="container-secao-usuarios-conectados-chat">

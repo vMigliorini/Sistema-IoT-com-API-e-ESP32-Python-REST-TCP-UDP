@@ -23,6 +23,58 @@ button {
   outline: inherit;    
 }
 
+dialog {
+  margin: auto;
+  position: fixed;
+  inset: 0;
+
+  border: none;
+  border-radius: 10px;
+
+  height: 30%;
+  width: 20%;
+
+  background-color: rgb(75, 75, 75);;
+}
+
+.pop-up-adiocionar-chat {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.container-inputs-sala {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-inputs-sala input {
+    border: 0px;
+    outline: none;
+    border-radius: 4px;
+    background-color: rgb(27, 27, 27);
+    color: white;
+    padding-left: 8px;
+    width: 70%;
+    height: 40px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.container-botoes-popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+    height: 25%;
+}
+
 .container-principal {
     display: flex;
     height: 100svh;
