@@ -48,7 +48,7 @@ dialog {
 }
 
 .container-inputs-sala {
-    height: 50%;
+    height: 30%;
     width: 100%;
     display: flex;
     align-items: center;
@@ -72,7 +72,29 @@ dialog {
     align-items: center;
     justify-content: center;
     gap: 35px;
+    height: 20%;
+    width: 100%;
+}
+
+.container-botoes-popup button {
+    height: 70%;
+    width: 30%;
+    background-color: #5c00b3;
+    border-radius: 8px;
+}
+
+.container-titulo-pupup {
+    width: 100%;
     height: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.campo-retorno-erros {
+    color: red;
+    font-size: medium;
+    text-align: center;
 }
 
 .container-principal {

@@ -11,13 +11,18 @@
 
     <dialog id="pop_up_adiocionar_chat">
         <div class="pop-up-adiocionar-chat">
-            <h2>Adicionar chat room</h2>
+            <div class="container-titulo-pupup">
+                <h2>Adicionar chat room</h2>    
+            </div>
             <div class="container-inputs-sala">
-                <input name="nome-sala" placeholder="Nome da sala">
+                <input name="nome-sala" id="nome-sala" placeholder="Nome da sala">
+            </div>
+            <div class="" id="campo-retorno-erros">
+    
             </div>
             <div class="container-botoes-popup">
                 <button id="fechar" onclick="fechar_popup_add_chat()">Fechar</button>
-                <button id="criar-sala">Criar sala</button>
+                <button id="criar-sala" onclick="criar_chatroom()">Criar sala</button>
             </div>
         </div>
     </dialog>
@@ -42,25 +47,8 @@
                     </div>
                 </div>
 
-                <div class="container-multi-chats">
+                <div class="container-multi-chats" id="container-multi-chats">
 
-                    <div class="container-chat-individual"> <!--   Aqui usaremos Js para adicionar os chats à sessão     -->
-
-                        <div class="chat-room">
-                            <div class="informacoes-chatroom">
-                                <div class="titulo-chatroom">
-                                    Sala 12
-                                </div>
-                                <div class="participantes-chatroom">
-                                    5 participantes
-                                </div>
-                            </div>
-                            <div class="icone-entrar-chatroom">
-                                <button><i class="fa-solid fa-circle-arrow-right"></i></button>
-                            </div>
-                        </div>
-                        
-                    </div>
 
                 </div>
 

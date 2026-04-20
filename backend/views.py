@@ -1,17 +1,37 @@
 from extensions import bcrypt, db
-from models import Usuario, CargoEnum
+from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP, UsuarioChat
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 
 views_bp = Blueprint('views', __name__)
 
 #rotas
-@views_bp.route("/chat_rooms")
+@views_bp.route("/chat_rooms", methods=["GET", "POST"])
 def chat_rooms():
-    if 'user_id' not in session:
-        return redirect(url_for('views.login'))
-    return render_template("chat_rooms.html")
+    if request.method == "GET":
+        if 'user_id' not in session:
+            return redirect(url_for('views.login'))
+        return render_template("chat_rooms.html")
+    
+    dados_nova_sala = request.json
+    nome_sala = dados_nova_sala["nome_sala"]
+
+    stmt = select(ChatRoom).where(ChatRoom.nome == nome_sala)
+    sala = db.session.execute(stmt).scalar()
+    if sala:
+        return jsonify({"ok": False, "erro": "Erro! Esse nome de sala já existe!"})
+
+    novo = ChatRoom(nome=nome_sala)
+    db.session.add(novo)
+    db.session.commit()
+
+    membro = UsuarioChat(id_usuario=session['user_id'], room_id=novo.id)
+    db.session.add(membro)
+    db.session.commit()
+
+    return jsonify({"ok": True, "nome": novo.nome, "id": novo.id})
+
 
 @views_bp.route("/", methods=["GET", "POST"])
 def login():
@@ -64,6 +84,7 @@ def cadastro():
     novo = Usuario(nome=nome, email=email, cargo=cargo_enum, senha_hash=hash_senha)
     db.session.add(novo)
     db.session.commit()
+
     return jsonify({"ok": True, "redirect": url_for('views.login')}), 201
 
 @views_bp.route("/me")
@@ -77,3 +98,15 @@ def me():
             "nome": session['username'],
             "cargo": session['role']
         })
+    
+@views_bp.route("/get_connected_users")
+def get_connected_users():
+    
+    contagens = (
+        db.session.query(ChatRoom.nome, func.count(UsuarioChat.id_usuario))
+        .outerjoin(UsuarioChat, UsuarioChat.room_id == ChatRoom.id)
+        .group_by(ChatRoom.id)
+        .all()
+    )
+
+    return jsonify([{"sala": nome, "usuarios": qtd} for nome, qtd in contagens])

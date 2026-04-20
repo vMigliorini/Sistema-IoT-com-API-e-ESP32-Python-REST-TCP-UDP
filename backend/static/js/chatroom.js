@@ -9,16 +9,69 @@ window.onload = async function() {
 
     document.getElementById("nome-user-perfil").innerHTML = user.nome
     document.getElementById("cargo-user-perfil").innerHTML = user.cargo
+
+    await inserir_chatroom()
 }
 
 
 
-async function abrir_popup_add_chat(){
+async function abrir_popup_add_chat() {
     const dialog = document.getElementById('pop_up_adiocionar_chat');
     dialog.showModal()
 }
 
-async function fechar_popup_add_chat(params) {
+async function fechar_popup_add_chat() {
     const dialog = document.getElementById('pop_up_adiocionar_chat');
     dialog.close()
+}
+
+async function criar_chatroom() {
+    const nome_sala = document.getElementById("nome-sala").value
+    const response = await fetch("/chat_rooms", {
+        method:"POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            nome_sala: nome_sala
+        })
+
+    })
+    const sala = await response.json()
+    if (!sala.ok){
+        document.getElementById("campo-retorno-erros").innerHTML = sala.erro
+    }
+    else{
+        fechar_popup_add_chat()
+        inserir_chatroom()
+    }
+}
+
+async function inserir_chatroom() {
+    const response = await fetch("/get_connected_users")
+    const users_conectados = await response.json()
+    document.getElementById("container-multi-chats").innerHTML = ""
+    for (var i = 0; i < users_conectados.length; i ++){
+
+        var template = `
+                    <div class="container-chat-individual"> <!--   Aqui usaremos Js para adicionar os chats à sessão     -->
+
+                        <div class="chat-room">
+                            <div class="informacoes-chatroom">
+                                <div class="titulo-chatroom">
+                                    ${users_conectados[i].sala}
+                                </div>
+                                <div class="participantes-chatroom">
+                                    ${users_conectados[i].usuarios} participante
+                                </div>
+                            </div>
+                            <div class="icone-entrar-chatroom">
+                                <button><i class="fa-solid fa-circle-arrow-right"></i></button>
+                            </div>
+                        </div>
+                        
+                    </div>
+        `
+        document.getElementById("container-multi-chats").innerHTML += template
+    }
 }

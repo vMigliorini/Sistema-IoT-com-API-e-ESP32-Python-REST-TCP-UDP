@@ -18,6 +18,11 @@ class Usuario(db.Model):
     senha_hash = db.Column(db.String(200))
     mensagens  = db.relationship("ChatMessage", backref="usuario")
 
+class UsuarioChat(db.Model):
+    id        = db.Column(db.Integer, primary_key=True) 
+    id_usuario= db.Column(db.Integer, db.ForeignKey("usuario.id"))
+    room_id   = db.Column(db.Integer, db.ForeignKey("chat_room.id"))
+
 class EspDevice(db.Model):
     id       = db.Column(db.Integer, primary_key=True)
     nome     = db.Column(db.String(100))
@@ -41,7 +46,7 @@ class ChatMessage(db.Model):
     room_id    = db.Column(db.Integer, db.ForeignKey("chat_room.id"))
     user_id    = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     conteudo   = db.Column(db.String(500))
-    enviado_em = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    enviado_em = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 class LeituraESP(db.Model):
     id        = db.Column(db.Integer, primary_key=True)
