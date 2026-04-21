@@ -1,10 +1,30 @@
-from extensions import bcrypt, db
+from extensions import bcrypt, db, socketio
 from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP, UsuarioChat
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+from flask_socketio import send, emit, join_room, leave_room
 from sqlalchemy import select, func
 
 
 views_bp = Blueprint('views', __name__)
+
+usuarios = {}
+
+#socketIO
+@socketio.on('join')
+def handle_join(username):
+    usuarios[request.sid] = username
+    join_room(username)
+    emit("message", {"username": "Sistema", "data": f"{username} entrou no chat"}, broadcast=True)
+
+@socketio.on('message')
+def handle_message(data):
+    username = usuarios.get(request.sid, "Anônimo")
+    emit("message", {"username": username, "data": data}, broadcast=True)
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    username = usuarios.pop(request.sid, "Anônimo")
+    emit("message", f"{username} saiu do chat", broadcast=True)
 
 #rotas
 @views_bp.route("/chat_rooms", methods=["GET", "POST"])
@@ -12,7 +32,9 @@ def chat_rooms():
     if request.method == "GET":
         if 'user_id' not in session:
             return redirect(url_for('views.login'))
+        
         return render_template("chat_rooms.html")
+
     
     dados_nova_sala = request.json
     nome_sala = dados_nova_sala["nome_sala"]
@@ -32,6 +54,19 @@ def chat_rooms():
 
     return jsonify({"ok": True, "nome": novo.nome, "id": novo.id})
 
+
+@views_bp.route("/chat_rooms/listar", methods=["GET"])
+def listar_chat_rooms():
+    if 'user_id' not in session:
+        return jsonify({"ok": False}), 401
+
+    contagens = (
+        db.session.query(ChatRoom.nome, func.count(UsuarioChat.id_usuario))
+        .outerjoin(UsuarioChat, UsuarioChat.room_id == ChatRoom.id)
+        .group_by(ChatRoom.id)
+        .all()
+    )
+    return jsonify([{"nome": nome, "usuarios": qtd} for nome, qtd in contagens])
 
 @views_bp.route("/", methods=["GET", "POST"])
 def login():
@@ -99,14 +134,3 @@ def me():
             "cargo": session['role']
         })
     
-@views_bp.route("/get_connected_users")
-def get_connected_users():
-    
-    contagens = (
-        db.session.query(ChatRoom.nome, func.count(UsuarioChat.id_usuario))
-        .outerjoin(UsuarioChat, UsuarioChat.room_id == ChatRoom.id)
-        .group_by(ChatRoom.id)
-        .all()
-    )
-
-    return jsonify([{"sala": nome, "usuarios": qtd} for nome, qtd in contagens])

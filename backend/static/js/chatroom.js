@@ -48,7 +48,7 @@ async function criar_chatroom() {
 }
 
 async function inserir_chatroom() {
-    const response = await fetch("/get_connected_users")
+    const response = await fetch("/chat_rooms/listar")
     const users_conectados = await response.json()
     document.getElementById("container-multi-chats").innerHTML = ""
     for (var i = 0; i < users_conectados.length; i ++){
@@ -59,14 +59,14 @@ async function inserir_chatroom() {
                         <div class="chat-room">
                             <div class="informacoes-chatroom">
                                 <div class="titulo-chatroom">
-                                    ${users_conectados[i].sala}
+                                    sala: ${users_conectados[i].nome}
                                 </div>
                                 <div class="participantes-chatroom">
-                                    ${users_conectados[i].usuarios} participante
+                                    online: ${users_conectados[i].usuarios}
                                 </div>
                             </div>
                             <div class="icone-entrar-chatroom">
-                                <button><i class="fa-solid fa-circle-arrow-right"></i></button>
+                                <button onclick=entrar_chatroom()><i class="fa-solid fa-circle-arrow-right"></i></button>
                             </div>
                         </div>
                         
@@ -74,4 +74,44 @@ async function inserir_chatroom() {
         `
         document.getElementById("container-multi-chats").innerHTML += template
     }
+}
+
+async function entrar_chatroom(){
+    var socket = io()
+    const dados_user = await fetch("/me")
+    const user = await dados_user.json()
+    if (!user.ok){
+        window.location.href = "/"
+    }
+    
+    var username = user.nome
+    socket.emit("join", username)
+
+    socket.on("message", function(data) {
+        var mensagens = document.getElementById("mensagem")
+        template = `
+                    <div class="mensagem">
+                        <div class="icone-user">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </div>
+                        <div class="conteudo-mensagem">
+                            <div class="nome-autor">
+                                ${data.username}
+                            </div>
+                            <div class="texto-autor">
+                                ${data.data}
+                            </div>
+                        </div>
+                    </div>
+        `
+        mensagens.innerHTML += template
+    })
+}
+
+function sendMessage(){
+    var socket = io()
+    var input_mensagem = document.getElementById("mensagem-digitada")
+    var mensagem = input_mensagem.value
+    socket.send(mensagem)
+    mensagem = ""
 }

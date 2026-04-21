@@ -1,12 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
-from extensions import db, bcrypt
+from extensions import db, bcrypt, socketio
 from views import views_bp
 import os
+
 
 app = Flask(__name__)
 
 app.secret_key = os.environ.get('SECRET_KEY', 'chave-so-pra-dev')
+
+socketio.init_app(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://neondb_owner:npg_nQasPZdpo9A6@ep-odd-scene-acsy6w3o.sa-east-1.aws.neon.tech/neondb?sslmode=require"
 
@@ -24,4 +27,4 @@ with app.app_context():
 
 
 if __name__ == "__main__":
-    app.run()
+    socketio.run(app, debug=True)

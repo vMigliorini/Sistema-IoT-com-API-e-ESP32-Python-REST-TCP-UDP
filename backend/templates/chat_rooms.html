@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
         <link rel="stylesheet" href="../static/style-chatroom.css">
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script defer src="{{ url_for('static', filename='js/chatroom.js') }}"></script>
         <title>Chat Rooms</title>
     </head>
@@ -77,28 +78,16 @@
                     </div>
 
                 </div>
-                <div class="container-chat">
-                    <div class="mensagem">
-                        <div class="icone-user">
-                            <i class="fa-solid fa-circle-user"></i>
-                        </div>
-                        <div class="conteudo-mensagem">
-                            <div class="nome-autor">
-                                User
-                            </div>
-                            <div class="texto-autor">
-                                oi
-                            </div>
-                        </div>
-                    </div>
+                <div class="container-chat" id="mensagem">
+                    
                 </div>
 
                 <div class="container-input-mensagem">
                     <div class="input-mensagem">
-                        <input name="mensagem-digitada" placeholder="Conversar">
+                        <input name="mensagem-digitada", id="mensagem-digitada" placeholder="Conversar">
                     </div>
                     <div class="botao-enviar">
-                        <button type="button"><i class="fa-solid fa-circle-arrow-up"></i></button>
+                        <button type="button" onclick="sendMessage()"><i class="fa-solid fa-circle-arrow-up"></i></button>
                     </div>
                 </div>
 
