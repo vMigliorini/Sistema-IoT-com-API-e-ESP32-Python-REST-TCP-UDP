@@ -108,6 +108,8 @@ function sendMessage(event){
     event.preventDefault();
     var input_mensagem = document.getElementById("mensagem-digitada")
     var mensagem = input_mensagem.value
+    if (mensagem.trim() === "") return;
     socket.send(mensagem)
+    input_mensagem.value = ""
     mensagem = ""
 }

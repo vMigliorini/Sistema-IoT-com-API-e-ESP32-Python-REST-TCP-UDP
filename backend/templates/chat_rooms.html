@@ -84,7 +84,7 @@
 
                 <div class="container-input-mensagem">
                     <div class="input-mensagem">
-                        <input name="mensagem-digitada", id="mensagem-digitada" placeholder="Conversar">
+                        <input name="mensagem-digitada" id="mensagem-digitada" placeholder="Conversar" onkeydown="if(event.key === 'Enter') sendMessage(event)">
                     </div>
                     <div class="botao-enviar">
                         <button type="button" onclick="sendMessage(event)"><i class="fa-solid fa-circle-arrow-up"></i></button>
