@@ -1,3 +1,5 @@
+var socket = null;
+
 window.onload = async function() {
     const dialog = document.getElementById('pop_up_adiocionar_chat');
     dialog.close()
@@ -77,15 +79,9 @@ async function inserir_chatroom() {
 }
 
 async function entrar_chatroom(){
-    var socket = io()
-    const dados_user = await fetch("/me")
-    const user = await dados_user.json()
-    if (!user.ok){
-        window.location.href = "/"
-    }
-    
-    var username = user.nome
-    socket.emit("join", username)
+
+    if (socket) socket.disconnect();
+    socket = io();
 
     socket.on("message", function(data) {
         var mensagens = document.getElementById("mensagem")
@@ -108,8 +104,8 @@ async function entrar_chatroom(){
     })
 }
 
-function sendMessage(){
-    var socket = io()
+function sendMessage(event){
+    event.preventDefault();
     var input_mensagem = document.getElementById("mensagem-digitada")
     var mensagem = input_mensagem.value
     socket.send(mensagem)

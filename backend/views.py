@@ -7,24 +7,21 @@ from sqlalchemy import select, func
 
 views_bp = Blueprint('views', __name__)
 
-usuarios = {}
-
 #socketIO
-@socketio.on('join')
-def handle_join(username):
-    usuarios[request.sid] = username
-    join_room(username)
+@socketio.on('connect')
+def handle_connect():
+    username = session.get('username', 'Anônimo')
     emit("message", {"username": "Sistema", "data": f"{username} entrou no chat"}, broadcast=True)
 
 @socketio.on('message')
 def handle_message(data):
-    username = usuarios.get(request.sid, "Anônimo")
+    username = session.get('username', 'Anônimo')
     emit("message", {"username": username, "data": data}, broadcast=True)
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    username = usuarios.pop(request.sid, "Anônimo")
-    emit("message", f"{username} saiu do chat", broadcast=True)
+    username = session.get('username', 'Anônimo')
+    emit("message", {"username": "Sistema", "data": f"{username} saiu do chat"}, broadcast=True)
 
 #rotas
 @views_bp.route("/chat_rooms", methods=["GET", "POST"])
