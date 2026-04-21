@@ -20,6 +20,10 @@ window.onload = async function() {
     }
 }
 
+function refresh(){
+    window.location.reload();
+}
+
 async function abrir_popup_add_chat() {
     const dialog = document.getElementById('pop_up_adiocionar_chat');
     dialog.showModal()

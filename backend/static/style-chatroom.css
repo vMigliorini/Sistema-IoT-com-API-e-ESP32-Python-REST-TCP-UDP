@@ -179,15 +179,30 @@ dialog {
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
-    height: 800px;
+    height: 760px;
     overflow-y: auto;
     overflow-x: hidden;
+    padding-top: 15px;
     padding-bottom: 30px;
-    padding-top: 30px;
     padding-left: 15px;
     padding-right: 15px;
     gap: 10px;
     width: 100%;
+}
+
+.container-icone-refresh {
+    display: flex;
+    height: 30px;
+    width: 100%;
+    align-items: center;
+    justify-content: end;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+.container-icone-refresh i {
+    font-size: 20px;
+    color: rgb(180, 180, 180);
 }
 
 .container-chat-individual {
