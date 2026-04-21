@@ -13,9 +13,12 @@ window.onload = async function() {
     document.getElementById("cargo-user-perfil").innerHTML = user.cargo
 
     await inserir_chatroom()
+
+    const saved_room_id = sessionStorage.getItem("room_id");
+    if (saved_room_id) {
+        await entrar_chatroom(parseInt(saved_room_id));
+    }
 }
-
-
 
 async function abrir_popup_add_chat() {
     const dialog = document.getElementById('pop_up_adiocionar_chat');
@@ -45,14 +48,20 @@ async function criar_chatroom() {
     }
     else{
         fechar_popup_add_chat()
-        inserir_chatroom()
+        desconectar()
+        await inserir_chatroom()
+        entrar_chatroom(sala.room_id)
     }
 }
 
 async function inserir_chatroom() {
+    document.getElementById("mensagem").innerHTML = ``
+
     const response = await fetch("/chat_rooms/listar")
     const users_conectados = await response.json()
+
     document.getElementById("container-multi-chats").innerHTML = ""
+
     for (var i = 0; i < users_conectados.length; i ++){
 
         var template = `
@@ -68,20 +77,32 @@ async function inserir_chatroom() {
                                 </div>
                             </div>
                             <div class="icone-entrar-chatroom">
-                                <button onclick=entrar_chatroom()><i class="fa-solid fa-circle-arrow-right"></i></button>
+                                <button onclick=entrar_chatroom(${users_conectados[i].id_sala})><i class="fa-solid fa-circle-arrow-right"></i></button>
                             </div>
                         </div>
                         
                     </div>
         `
-        document.getElementById("container-multi-chats").innerHTML += template
+        document.getElementById("container-multi-chats").innerHTML += template   
     }
 }
 
-async function entrar_chatroom(){
+async function entrar_chatroom(room_id){
 
-    if (socket) socket.disconnect();
+    desconectar();
+
+    sessionStorage.setItem("room_id", room_id);
+
     socket = io();
+
+    socket.on("connect", function(){
+        const saved_room_id = sessionStorage.getItem("room_id");
+        if (saved_room_id) {
+            socket.emit("join", parseInt(saved_room_id));
+        }else{
+            socket.emit("join", room_id)
+        }
+    })
 
     socket.on("message", function(data) {
         var mensagens = document.getElementById("mensagem")
@@ -91,7 +112,7 @@ async function entrar_chatroom(){
                             <i class="fa-solid fa-circle-user"></i>
                         </div>
                         <div class="conteudo-mensagem">
-                            <div class="nome-autor">
+                            <div class="nome-autor-mensagem">
                                 ${data.username}
                             </div>
                             <div class="texto-autor">
@@ -112,4 +133,13 @@ function sendMessage(event){
     socket.send(mensagem)
     input_mensagem.value = ""
     mensagem = ""
+}
+
+function desconectar() {
+    if (socket) {
+        socket.disconnect();
+        socket = null
+    }
+    sessionStorage.removeItem("room_id");
+    document.getElementById("mensagem").innerHTML = "";
 }

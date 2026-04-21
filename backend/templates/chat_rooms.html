@@ -23,7 +23,7 @@
             </div>
             <div class="container-botoes-popup">
                 <button id="fechar" onclick="fechar_popup_add_chat()">Fechar</button>
-                <button id="criar-sala" onclick="criar_chatroom()">Criar sala</button>
+                <button id="criar-sala" onclick="criar_chatroom()" onkeydown="if(event.key === 'Enter') criar_chatroom()">Criar sala</button>
             </div>
         </div>
     </dialog>
@@ -112,6 +112,9 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="container-botao-desconectar">
+                    <button type="button" onclick="desconectar()">Desconectar</button>
                 </div>
 
             </div>

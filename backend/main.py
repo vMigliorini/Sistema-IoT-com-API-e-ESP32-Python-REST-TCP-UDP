@@ -22,7 +22,6 @@ app.register_blueprint(views_bp)
 
 
 with app.app_context():
-    from models import Usuario, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP
     db.create_all()
 
 

@@ -1,27 +1,70 @@
 from extensions import bcrypt, db, socketio
-from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP, UsuarioChat
+from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP, UsuarioChat, StatusConexaoEnum
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from flask_socketio import send, emit, join_room, leave_room
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update, delete
 
 
 views_bp = Blueprint('views', __name__)
 
+
+
+
+
 #socketIO
 @socketio.on('connect')
 def handle_connect():
-    username = session.get('username', 'Anônimo')
-    emit("message", {"username": "Sistema", "data": f"{username} entrou no chat"}, broadcast=True)
+    pass
+
+@socketio.on('join')
+def handle_join(room_id):
+    username = session.get('username')
+    user_id = session.get('user_id')
+
+    sala = db.session.get(ChatRoom, room_id)
+    if not sala:
+        emit("message", {"data": "Sala não encontrada"})
+        return
+
+    session['room_id'] = room_id
+
+    stmt = select(UsuarioChat).where(UsuarioChat.id_usuario == user_id, UsuarioChat.room_id == room_id)
+    membro = db.session.execute(stmt).scalar()
+
+    if membro:
+        membro.status = StatusConexaoEnum.conectado
+    else:
+        membro = UsuarioChat(id_usuario=user_id, room_id=room_id)
+        db.session.add(membro)
+
+    db.session.commit()
+    join_room(room_id)
+    emit("message", {"username": "Sistema", "data": f"{username} entrou no chat"}, to=room_id)
 
 @socketio.on('message')
 def handle_message(data):
     username = session.get('username', 'Anônimo')
-    emit("message", {"username": username, "data": data}, broadcast=True)
+    room_id = session.get('room_id')
+    emit("message", {"username": username, "data": data}, to=room_id)
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    username = session.get('username', 'Anônimo')
-    emit("message", {"username": "Sistema", "data": f"{username} saiu do chat"}, broadcast=True)
+    username = session.get('username')
+    user_id = session.get('user_id')
+    room_id = session.get('room_id')
+    stmt = (
+            update(UsuarioChat)
+            .where(UsuarioChat.id_usuario == user_id)
+            .values(status=StatusConexaoEnum.desconectado)
+        )
+    db.session.execute(stmt)
+    db.session.commit()
+
+    emit("message", {"username": "Sistema", "data": f"{username} saiu do chat"}, to=room_id)
+
+
+
+
 
 #rotas
 @views_bp.route("/chat_rooms", methods=["GET", "POST"])
@@ -49,21 +92,42 @@ def chat_rooms():
     db.session.add(membro)
     db.session.commit()
 
-    return jsonify({"ok": True, "nome": novo.nome, "id": novo.id})
+    return jsonify({"ok": True, "nome": novo.nome, "room_id": novo.id})
 
 
 @views_bp.route("/chat_rooms/listar", methods=["GET"])
 def listar_chat_rooms():
     if 'user_id' not in session:
         return jsonify({"ok": False}), 401
+    
+    rooms_vazias = [
+        row.id for row in (
+            db.session.query(ChatRoom.id)
+            .outerjoin(UsuarioChat, (UsuarioChat.room_id == ChatRoom.id) &
+                                    (UsuarioChat.status == StatusConexaoEnum.conectado))
+            .group_by(ChatRoom.id)
+            .having(func.count(UsuarioChat.id_usuario) == 0)
+            .all()
+        )
+    ]
+
+    if rooms_vazias:
+        db.session.execute(delete(UsuarioChat).where(UsuarioChat.room_id.in_(rooms_vazias)))
+        db.session.execute(delete(ChatRoom).where(ChatRoom.id.in_(rooms_vazias)))
+        db.session.commit()
 
     contagens = (
-        db.session.query(ChatRoom.nome, func.count(UsuarioChat.id_usuario))
+        db.session.query(ChatRoom.id, ChatRoom.nome, func.count(UsuarioChat.id_usuario))
         .outerjoin(UsuarioChat, UsuarioChat.room_id == ChatRoom.id)
+        .filter(
+            (UsuarioChat.status == StatusConexaoEnum.conectado) | 
+            (UsuarioChat.status == None)
+        )
         .group_by(ChatRoom.id)
         .all()
     )
-    return jsonify([{"nome": nome, "usuarios": qtd} for nome, qtd in contagens])
+    return jsonify([{"id_sala": id_sala, "nome": nome, "usuarios": qtd} for id_sala, nome, qtd in contagens])
+
 
 @views_bp.route("/", methods=["GET", "POST"])
 def login():

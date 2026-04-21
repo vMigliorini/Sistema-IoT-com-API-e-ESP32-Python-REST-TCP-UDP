@@ -10,6 +10,10 @@ class CargoEnum(enum.Enum):
     PSICOLOGO = "Psicologo"
     GERENTE_PROJETOS = "Gerente-projetos"
 
+class StatusConexaoEnum(enum.Enum):
+    conectado = "conectado"
+    desconectado = "desconectado"
+
 class Usuario(db.Model):
     id         = db.Column(db.Integer, primary_key=True)
     nome       = db.Column(db.String(100))
@@ -22,6 +26,7 @@ class UsuarioChat(db.Model):
     id        = db.Column(db.Integer, primary_key=True) 
     id_usuario= db.Column(db.Integer, db.ForeignKey("usuario.id"))
     room_id   = db.Column(db.Integer, db.ForeignKey("chat_room.id"))
+    status = db.Column(db.Enum(StatusConexaoEnum), default=StatusConexaoEnum.conectado)
 
 class EspDevice(db.Model):
     id       = db.Column(db.Integer, primary_key=True)
