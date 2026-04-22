@@ -16,14 +16,14 @@
                 <h2>Adicionar chat room</h2>    
             </div>
             <div class="container-inputs-sala">
-                <input name="nome-sala" id="nome-sala" placeholder="Nome da sala">
+                <input name="nome-sala" id="nome-sala" onkeydown="if(event.key === 'Enter') criar_chatroom()" placeholder="Nome da sala">
             </div>
             <div class="" id="campo-retorno-erros">
     
             </div>
             <div class="container-botoes-popup">
                 <button id="fechar" onclick="fechar_popup_add_chat()">Fechar</button>
-                <button id="criar-sala" onclick="criar_chatroom()" onkeydown="if(event.key === 'Enter') criar_chatroom()">Criar sala</button>
+                <button id="criar-sala" onclick="criar_chatroom()" >Criar sala</button>
             </div>
         </div>
     </dialog>
@@ -103,18 +103,9 @@
                     </div>
                     
                 </div>
-                <div class="informacoes-usuario-conectado">
+                <div class="informacoes-usuario-conectado" id="usuarios-conectados">
 
-                    <div class="container-users">
-                        <div class="icone-user-conectados">
-                            <i class="fa-solid fa-circle-user"></i>
-                        </div>
-                        <div class="conteudo-mensagem">
-                            <div class="nome-autor">
-                                User
-                            </div>
-                        </div>
-                    </div>
+                    
 
                 </div>
                 <div class="container-botao-desconectar">

@@ -128,6 +128,26 @@ def listar_chat_rooms():
     )
     return jsonify([{"id_sala": id_sala, "nome": nome, "usuarios": qtd} for id_sala, nome, qtd in contagens])
 
+@views_bp.route("/chat_rooms/listar_nome_users", methods=["GET"])
+def listar_nome_users():
+
+    room_id_str = request.args.get('room_id')
+
+    room_id = int(room_id_str)
+
+    resultados = (
+        db.session.query(Usuario.nome)
+        .join(UsuarioChat, Usuario.id == UsuarioChat.id_usuario)
+        .filter(
+            UsuarioChat.status == StatusConexaoEnum.conectado,
+            UsuarioChat.room_id == room_id
+        )
+        .all()
+    )
+
+    lista_de_nomes = [usuario[0] for usuario in resultados]
+
+    return jsonify({"ok": True, "usuarios": lista_de_nomes})
 
 @views_bp.route("/", methods=["GET", "POST"])
 def login():

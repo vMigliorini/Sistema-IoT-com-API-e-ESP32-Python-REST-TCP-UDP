@@ -51,10 +51,10 @@ async function criar_chatroom() {
         document.getElementById("campo-retorno-erros").innerHTML = sala.erro
     }
     else{
-        fechar_popup_add_chat()
+        await fechar_popup_add_chat()
         desconectar()
         await inserir_chatroom()
-        entrar_chatroom(sala.room_id)
+        await entrar_chatroom(sala.room_id)
     }
 }
 
@@ -99,6 +99,8 @@ async function entrar_chatroom(room_id){
 
     socket = io();
 
+    await usuarios_conectados(room_id)
+
     socket.on("connect", function(){
         const saved_room_id = sessionStorage.getItem("room_id");
         if (saved_room_id) {
@@ -106,6 +108,10 @@ async function entrar_chatroom(room_id){
         }else{
             socket.emit("join", room_id)
         }
+    })
+
+    socket.on("disconnect", function(){
+        desconectar()
     })
 
     socket.on("message", function(data) {
@@ -127,6 +133,7 @@ async function entrar_chatroom(room_id){
         `
         mensagens.innerHTML += template
     })
+
 }
 
 function sendMessage(event){
@@ -146,4 +153,44 @@ function desconectar() {
     }
     sessionStorage.removeItem("room_id");
     document.getElementById("mensagem").innerHTML = "";
+}
+
+async function usuarios_conectados(room_id) {
+    var template = `
+                    <div class="container-users">
+                        <div class="icone-user-conectados">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </div>
+                        <div class="conteudo-mensagem">
+                            <div class="nome-autor">
+                                
+                            </div>
+                        </div>
+                    </div>
+    `
+    const response = await fetch(`/chat_rooms/listar_nome_users?room_id=${room_id}`)
+    const lista_nomes = await response.json()
+
+    if (!lista_nomes.ok) {
+        console.log(lista_nomes.ok)
+        return
+    }
+
+    for (var i = 0; i < lista_nomes.usuarios.lenght; i++) {
+        var template = `
+                    <div class="container-users">
+                        <div class="icone-user-conectados">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </div>
+                        <div class="conteudo-mensagem">
+                            <div class="nome-autor">
+                                ${lista_nomes[i].usuarios}
+                            </div>
+                        </div>
+                    </div>
+        `
+        document.getElementById("usuarios-conectados").innerHTML += template
+    }
+
+
 }
