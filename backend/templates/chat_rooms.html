@@ -5,9 +5,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
         <link rel="stylesheet" href="../static/style-chatroom.css">
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script defer src="{{ url_for('static', filename='js/chatroom.js') }}"></script>
         <title>Chat Rooms</title>
     </head>
+
+    <dialog id="pop_up_adiocionar_chat">
+        <div class="pop-up-adiocionar-chat">
+            <div class="container-titulo-pupup">
+                <h2>Adicionar chat room</h2>    
+            </div>
+            <div class="container-inputs-sala">
+                <input name="nome-sala" id="nome-sala" onkeydown="if(event.key === 'Enter') criar_chatroom()" placeholder="Nome da sala">
+            </div>
+            <div class="" id="campo-retorno-erros">
+    
+            </div>
+            <div class="container-botoes-popup">
+                <button id="fechar" onclick="fechar_popup_add_chat()">Fechar</button>
+                <button id="criar-sala" onclick="criar_chatroom()" >Criar sala</button>
+            </div>
+        </div>
+    </dialog>
+
     <body>
         <div class="container-principal">
             
@@ -28,31 +48,18 @@
                     </div>
                 </div>
 
-                <div class="container-multi-chats">
+                <div class="container-icone-refresh">
+                    <button type="button" onclick="refresh()"><i class="fa-solid fa-arrows-rotate"></i></button>
+                </div>
 
-                    <div class="container-chat-individual"> <!--   Aqui usaremos Js para adicionar os chats à sessão     -->
+                <div class="container-multi-chats" id="container-multi-chats">
 
-                        <div class="chat-room">
-                            <div class="informacoes-chatroom">
-                                <div class="titulo-chatroom">
-                                    Sala 12
-                                </div>
-                                <div class="participantes-chatroom">
-                                    5 participantes
-                                </div>
-                            </div>
-                            <div class="icone-entrar-chatroom">
-                                <button><i class="fa-solid fa-circle-arrow-right"></i></button>
-                            </div>
-                        </div>
-                        
-                    </div>
 
                 </div>
 
                 <div class="container-novo-chat">
                     <div class="figura">
-                        <button type="button" onclick="adicionar_chat()"><i class="fa-solid fa-circle-plus"></i></button>
+                        <button type="button" onclick="abrir_popup_add_chat()"><i class="fa-solid fa-circle-plus"></i></button>
                     </div>
                     <div class="texto">
                         Adicionar chat
@@ -75,34 +82,18 @@
                     </div>
 
                 </div>
-                <div class="container-chat" id="container-chat">
-                    <div class="mensagem">
-                        <div class="icone-user">
-                            <i class="fa-solid fa-circle-user"></i>
-                        </div>
-                        <div class="conteudo-mensagem">
-                            <div class="nome-autor">
-                                User
-                            </div>
-                            <div class="texto-autor">
-                                oi
-                            </div>
-                        </div>
-                    </div>
+                <div class="container-chat" id="mensagem">
+                    
                 </div>
 
-                <form id="form-mensagem-digitada">
-
-                    <div class="container-input-mensagem">
-                        <div class="input-mensagem">
-                            <input name="mensagem-digitada" name="conteudo-mensagem" placeholder="Conversar">
-                        </div>
-                        <div class="botao-enviar">
-                            <button type="button" onclick="enviar_mensagem()"><i class="fa-solid fa-circle-arrow-up"></i></button>
-                        </div>
+                <div class="container-input-mensagem">
+                    <div class="input-mensagem">
+                        <input name="mensagem-digitada" id="mensagem-digitada" placeholder="Conversar" onkeydown="if(event.key === 'Enter') sendMessage(event)">
                     </div>
-
-                </form>
+                    <div class="botao-enviar">
+                        <button type="button" onclick="sendMessage(event)"><i class="fa-solid fa-circle-arrow-up"></i></button>
+                    </div>
+                </div>
 
             </div>
             <div class="container-secao-usuarios-conectados-chat">
@@ -112,19 +103,13 @@
                     </div>
                     
                 </div>
-                <div class="informacoes-usuario-conectado">
+                <div class="informacoes-usuario-conectado" id="usuarios-conectados">
 
-                    <div class="container-users">
-                        <div class="icone-user-conectados">
-                            <i class="fa-solid fa-circle-user"></i>
-                        </div>
-                        <div class="conteudo-mensagem">
-                            <div class="nome-autor">
-                                User
-                            </div>
-                        </div>
-                    </div>
+                    
 
+                </div>
+                <div class="container-botao-desconectar">
+                    <button type="button" onclick="desconectar()">Desconectar</button>
                 </div>
 
             </div>
