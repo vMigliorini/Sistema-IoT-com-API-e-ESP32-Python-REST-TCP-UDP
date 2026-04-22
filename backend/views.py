@@ -94,12 +94,8 @@ def chat_rooms():
 
     return jsonify({"ok": True, "nome": novo.nome, "room_id": novo.id})
 
-
-@views_bp.route("/chat_rooms/listar", methods=["GET"])
-def listar_chat_rooms():
-    if 'user_id' not in session:
-        return jsonify({"ok": False}), 401
-    
+@views_bp.route("/chat_rooms/limpar_rooms")
+def limpar_rooms():
     rooms_vazias = [
         row.id for row in (
             db.session.query(ChatRoom.id)
@@ -115,6 +111,12 @@ def listar_chat_rooms():
         db.session.execute(delete(UsuarioChat).where(UsuarioChat.room_id.in_(rooms_vazias)))
         db.session.execute(delete(ChatRoom).where(ChatRoom.id.in_(rooms_vazias)))
         db.session.commit()
+
+
+@views_bp.route("/chat_rooms/listar", methods=["GET"])
+def listar_chat_rooms():
+    if 'user_id' not in session:
+        return jsonify({"ok": False}), 401
 
     contagens = (
         db.session.query(ChatRoom.id, ChatRoom.nome, func.count(UsuarioChat.id_usuario))

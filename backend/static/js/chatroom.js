@@ -12,15 +12,14 @@ window.onload = async function() {
     document.getElementById("nome-user-perfil").innerHTML = user.nome
     document.getElementById("cargo-user-perfil").innerHTML = user.cargo
 
-    await inserir_chatroom()
-
     const saved_room_id = sessionStorage.getItem("room_id");
     if (saved_room_id) {
         await entrar_chatroom(parseInt(saved_room_id));
     }
 }
 
-function refresh(){
+async function refresh(){
+    await fetch("/chat_rooms/limpar_rooms")
     window.location.reload();
 }
 
@@ -36,6 +35,10 @@ async function fechar_popup_add_chat() {
 
 async function criar_chatroom() {
     const nome_sala = document.getElementById("nome-sala").value
+    if (nome_sala == ""){
+        document.getElementById("campo-retorno-erros").innerHTML = "Erro! sala sem nome"
+        return
+    }
     const response = await fetch("/chat_rooms", {
         method:"POST",
         headers: {
@@ -53,13 +56,12 @@ async function criar_chatroom() {
     else{
         await fechar_popup_add_chat()
         desconectar()
-        await inserir_chatroom()
         await entrar_chatroom(sala.room_id)
+        await inserir_chatroom()
     }
 }
 
 async function inserir_chatroom() {
-    document.getElementById("mensagem").innerHTML = ``
 
     const response = await fetch("/chat_rooms/listar")
     const users_conectados = await response.json()
@@ -99,8 +101,6 @@ async function entrar_chatroom(room_id){
 
     socket = io();
 
-    await usuarios_conectados(room_id)
-
     socket.on("connect", function(){
         const saved_room_id = sessionStorage.getItem("room_id");
         if (saved_room_id) {
@@ -123,7 +123,7 @@ async function entrar_chatroom(room_id){
                         </div>
                         <div class="conteudo-mensagem">
                             <div class="nome-autor-mensagem">
-                                ${data.username}
+                                ${sanitize(data.username)}
                             </div>
                             <div class="texto-autor">
                                 ${data.data}
@@ -132,7 +132,10 @@ async function entrar_chatroom(room_id){
                     </div>
         `
         mensagens.innerHTML += template
+        mensagens.scrollTop = mensagens.scrollHeight;
     })
+
+    await usuarios_conectados(room_id)
 
 }
 
@@ -146,28 +149,18 @@ function sendMessage(event){
     mensagem = ""
 }
 
-function desconectar() {
+async function desconectar() {
     if (socket) {
-        socket.disconnect();
+        socket.disconnect()
         socket = null
     }
-    sessionStorage.removeItem("room_id");
-    document.getElementById("mensagem").innerHTML = "";
+    sessionStorage.removeItem("room_id")
+    document.getElementById("mensagem").innerHTML = ""
+    await fetch("/chat_rooms/limpar_rooms")
 }
 
 async function usuarios_conectados(room_id) {
-    var template = `
-                    <div class="container-users">
-                        <div class="icone-user-conectados">
-                            <i class="fa-solid fa-circle-user"></i>
-                        </div>
-                        <div class="conteudo-mensagem">
-                            <div class="nome-autor">
-                                
-                            </div>
-                        </div>
-                    </div>
-    `
+    
     const response = await fetch(`/chat_rooms/listar_nome_users?room_id=${room_id}`)
     const lista_nomes = await response.json()
 
@@ -176,7 +169,7 @@ async function usuarios_conectados(room_id) {
         return
     }
 
-    for (var i = 0; i < lista_nomes.usuarios.lenght; i++) {
+    for (var i = 0; i < lista_nomes.usuarios.length; i++) {
         var template = `
                     <div class="container-users">
                         <div class="icone-user-conectados">
@@ -184,7 +177,7 @@ async function usuarios_conectados(room_id) {
                         </div>
                         <div class="conteudo-mensagem">
                             <div class="nome-autor">
-                                ${lista_nomes[i].usuarios}
+                                ${lista_nomes.usuarios[i]}
                             </div>
                         </div>
                     </div>
@@ -193,4 +186,10 @@ async function usuarios_conectados(room_id) {
     }
 
 
+}
+
+function sanitize(str) {
+    const div = document.createElement("div");
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
 }
