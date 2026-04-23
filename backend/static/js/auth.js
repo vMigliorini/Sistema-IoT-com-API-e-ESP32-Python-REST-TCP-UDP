@@ -90,7 +90,7 @@ async function logar(event){
         return
     }
 
-    const response = await fetch("/api/", {
+    const response = await fetch("/api/login", {
         method: "POST",
         credentials: 'include',
         headers: {

@@ -77,7 +77,7 @@ def limpar_chat_rooms():
 def login():
     return render_template("login.html")
 
-@views_bp.route("/api/", methods=["POST"])
+@views_bp.route("/api/login", methods=["POST"])
 def fazer_login():
     dados_login = request.json
     email =  dados_login.get("email")
