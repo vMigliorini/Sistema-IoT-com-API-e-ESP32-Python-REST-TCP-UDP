@@ -19,7 +19,12 @@ window.onload = async function() {
 }
 
 async function refresh(){
-    await fetch("/chat_rooms/limpar_rooms")
+    await fetch("/api/chat_rooms", {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
     window.location.reload();
 }
 
@@ -39,7 +44,7 @@ async function criar_chatroom() {
         document.getElementById("campo-retorno-erros").innerHTML = "Erro! sala sem nome"
         return
     }
-    const response = await fetch("/chat_rooms", {
+    const response = await fetch("/api/chat_rooms", {
         method:"POST",
         headers: {
             "Content-Type": "application/json"
@@ -63,7 +68,7 @@ async function criar_chatroom() {
 
 async function inserir_chatroom() {
 
-    const response = await fetch("/chat_rooms/listar")
+    const response = await fetch("/api/chat_rooms")
     const users_conectados = await response.json()
 
     document.getElementById("container-multi-chats").innerHTML = ""
@@ -156,12 +161,17 @@ async function desconectar() {
     }
     sessionStorage.removeItem("room_id")
     document.getElementById("mensagem").innerHTML = ""
-    await fetch("/chat_rooms/limpar_rooms")
+    await fetch("/api/chat_rooms", {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
 async function usuarios_conectados(room_id) {
     
-    const response = await fetch(`/chat_rooms/listar_nome_users?room_id=${room_id}`)
+    const response = await fetch(`/api/chat_rooms/${room_id}`)
     const lista_nomes = await response.json()
 
     if (!lista_nomes.ok) {

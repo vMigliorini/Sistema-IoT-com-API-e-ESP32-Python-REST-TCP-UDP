@@ -34,7 +34,7 @@ async function cadastrar(event){
         return
     }
 
-    const response = await fetch("/cadastro", {
+    const response = await fetch("/api/cadastro", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -90,7 +90,7 @@ async function logar(event){
         return
     }
 
-    const response = await fetch("/", {
+    const response = await fetch("/api/", {
         method: "POST",
         credentials: 'include',
         headers: {
