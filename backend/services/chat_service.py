@@ -53,16 +53,16 @@ def limpar_salas_vazias():
                 .all()
             )
         ]
-    except SQLAlchemyError as erro:
-        return erro
 
-    if not rooms_vazias:
-        return None
-    try:
+        if not rooms_vazias:
+            return None
+
         db.session.execute(delete(UsuarioChat).where(UsuarioChat.room_id.in_(rooms_vazias)))
         db.session.execute(delete(ChatRoom).where(ChatRoom.id.in_(rooms_vazias)))
         db.session.commit()
+
     except SQLAlchemyError as erro:
+        db.session.rollback()
         return erro
     
     return None
@@ -81,14 +81,13 @@ def criar_sala(nome_sala, user_id):
         novo = ChatRoom(nome=nome_sala)
         db.session.add(novo)
         db.session.commit()
-    except SQLAlchemyError as erro:
-        return None, erro
-
-    try:
+    
         membro = UsuarioChat(id_usuario=user_id, room_id=novo.id)
         db.session.add(membro)
         db.session.commit()
+
     except SQLAlchemyError as erro:
+        db.session.rollback()
         return None, erro
 
     return novo, None

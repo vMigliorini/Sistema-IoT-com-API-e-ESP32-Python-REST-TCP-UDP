@@ -131,7 +131,7 @@ async function entrar_chatroom(room_id){
                                 ${sanitize(data.username)}
                             </div>
                             <div class="texto-autor">
-                                ${data.data}
+                                ${sanitize(data.data)}
                             </div>
                         </div>
                     </div>
@@ -161,15 +161,11 @@ async function desconectar() {
     }
     sessionStorage.removeItem("room_id")
     document.getElementById("mensagem").innerHTML = ""
-    await fetch("/api/chat_rooms", {
-        method: "DELETE",
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
 }
 
 async function usuarios_conectados(room_id) {
+
+    document.getElementById("usuarios-conectados").innerHTML = ""
     
     const response = await fetch(`/api/chat_rooms/${room_id}`)
     const lista_nomes = await response.json()

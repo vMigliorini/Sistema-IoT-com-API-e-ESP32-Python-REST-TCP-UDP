@@ -20,6 +20,7 @@ bcrypt.init_app(app)
 
 app.register_blueprint(views_bp)
 
+import socket_events
 
 with app.app_context():
     db.create_all()

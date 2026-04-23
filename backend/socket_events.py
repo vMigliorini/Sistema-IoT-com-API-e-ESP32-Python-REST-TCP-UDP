@@ -1,4 +1,4 @@
-from extensions import db, socketio
+from extensions import socketio
 from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP, UsuarioChat, StatusConexaoEnum
 from flask import session
 from sqlalchemy import select, func, update, delete
@@ -53,7 +53,6 @@ def handle_message(data):
 
 
 @socketio.on('disconnect')
-@socket_login_required
 def handle_disconnect():
     username = session.get('username')
     user_id = session.get('user_id')

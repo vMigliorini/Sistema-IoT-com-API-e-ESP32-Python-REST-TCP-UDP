@@ -12,21 +12,22 @@ def cadastrar(nome, email, senha, cargo):
     except ValueError:
         return None, "Erro! Cargo inválido"
 
-    stmt = select(Usuario).where(Usuario.email == email)
     try:
+        stmt = select(Usuario).where(Usuario.email == email)
         usuario_existente = db.session.execute(stmt).scalar()
-    except SQLAlchemyError as erro:
-        return None, erro
     
-    if usuario_existente:
-        return None, "Erro! Email já cadastrado"
+    
+        if usuario_existente:
+            return None, "Erro! Email já cadastrado"
 
-    hash_senha = bcrypt.generate_password_hash(senha).decode("utf-8")
-    try:
+        hash_senha = bcrypt.generate_password_hash(senha).decode("utf-8")
+
         novo = Usuario(nome=nome, email=email, cargo=cargo_enum, senha_hash=hash_senha)
         db.session.add(novo)
         db.session.commit()
+
     except SQLAlchemyError as erro:
+        db.session.rollback()
         return None, erro
 
     return True, None
@@ -36,8 +37,8 @@ def logar(email, senha):
     if not email or not senha:
         return None, "Erro! Email e senha não foram inseridos"
 
-    stmt = select(Usuario).where(Usuario.email == email)
     try:
+        stmt = select(Usuario).where(Usuario.email == email)
         usuario = db.session.execute(stmt).scalar()
     except SQLAlchemyError as erro:
         return None, erro

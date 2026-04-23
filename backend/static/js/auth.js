@@ -5,6 +5,7 @@ async function cadastrar(event){
     
     const nome = form_dados.get('nome')
     const email = form_dados.get('email')
+    const email_valido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     const senha = form_dados.get('senha')
     const confirmacao_senha = form_dados.get('confirmacao-senha')
     const cargo = form_dados.get('cargos')
@@ -15,13 +16,13 @@ async function cadastrar(event){
 
     let mensagem = ""
 
-    if (senha != confirmacao_senha){
-        mensagem = erros[0]
-    } 
-    else if (nome == "" || email == "" || cargo == ""){
+    if (nome == "" || email == "" || cargo == ""){
         mensagem = erros[2]
     }
-    else if (!email.includes("@") || !email.includes(".com")){
+    else if (senha != confirmacao_senha){
+        mensagem = erros[0]
+    } 
+    else if (!email_valido){
         mensagem = erros[1]
     } 
     
@@ -69,6 +70,8 @@ async function logar(event){
     const email = form_dados.get('email')
     const senha = form_dados.get('senha')
 
+    const email_valido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+
     const erros = ["Erro! Preencha todos os campos", "Erro! Email fora de padrão"]
 
     let mensagem = ""
@@ -77,7 +80,7 @@ async function logar(event){
     if (email == "" || senha == ""){
         mensagem = erros[0]
     }
-    else if (!email.includes("@") || !email.includes(".com")){
+    else if (!email_valido){
         mensagem = erros[1]
     }
     

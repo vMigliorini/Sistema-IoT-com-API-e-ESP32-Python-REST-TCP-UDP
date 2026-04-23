@@ -9,30 +9,24 @@ def entrar_sala(room_id, user_id):
 
     try:
         sala = db.session.get(ChatRoom, room_id)
-    except SQLAlchemyError as erro:
-        return None, erro
     
-    if not sala:
-        return None, "Sala não encontrada"
+        if not sala:
+            return None, "Sala não encontrada"
 
-    try:
         stmt = select(UsuarioChat).where(UsuarioChat.id_usuario == user_id, UsuarioChat.room_id == room_id)
         membro = db.session.execute(stmt).scalar()
-    except SQLAlchemyError as erro:
-        return None, erro
-
-    if membro:
-        membro.status = StatusConexaoEnum.conectado
-        
-    else:
-        try:
+    
+        if membro:
+            membro.status = StatusConexaoEnum.conectado
+        else:
             membro = UsuarioChat(id_usuario=user_id, room_id=room_id)
             db.session.add(membro)
-        except SQLAlchemyError as erro:
-            return None, erro
-            
-    db.session.commit()
-    return True, None
+        db.session.commit()
+        return True, None
+
+    except SQLAlchemyError as erro:
+        db.session.rollback()
+        return None, erro
 
 def atualizar_desconexao(user_id):
     if not user_id:
@@ -47,5 +41,6 @@ def atualizar_desconexao(user_id):
         db.session.execute(stmt)
         db.session.commit()
     except SQLAlchemyError as erro:
+        db.session.rollback()
         return None, erro
     return True, None
