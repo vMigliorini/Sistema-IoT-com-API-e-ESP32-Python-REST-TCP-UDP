@@ -3,7 +3,7 @@ from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMess
 from flask import session
 from sqlalchemy import select, func, update, delete
 from flask_socketio import send, emit, join_room, leave_room, disconnect
-from services.socket_service import entrar_sala, atualizar_desconexao
+from services.socket_service import entrar_sala, atualizar_desconexao, commit_mensagens
 from functools import wraps
 
 
@@ -50,7 +50,13 @@ def handle_join(room_id):
 def handle_message(data):
     username = session.get('username', 'Anônimo')
     room_id = session.get('room_id')
-    emit("message", {"username": username, "data": data}, to=room_id)
+    user_id = session.get('user_id')
+    mensagem_enviada, erro = commit_mensagens(room_id, user_id, data)
+    if erro:
+        emit("message", {"username": "Sistema", "data": erro})
+        return
+    if mensagem_enviada:
+        emit("message", {"username": username, "data": data}, to=room_id)
 
 
 @socketio.on('disconnect')

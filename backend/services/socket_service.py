@@ -44,3 +44,17 @@ def atualizar_desconexao(user_id):
         db.session.rollback()
         return None, erro
     return True, None
+
+def commit_mensagens(room_id, user_id, conteudo):
+    if not room_id or not user_id or not conteudo:
+        return None, "Erro! Faltam campos para dar commit nas mensagens"
+    
+    try:
+        novo = ChatMessage(room_id=room_id, user_id=user_id, conteudo=conteudo)
+        db.session.add(novo)
+        db.session.commit()
+    except SQLAlchemyError as erro:
+        db.session.rollback()
+        return None, erro
+    
+    return True, None
