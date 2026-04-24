@@ -22,11 +22,11 @@ def entrar_sala(room_id, user_id):
             membro = UsuarioChat(id_usuario=user_id, room_id=room_id)
             db.session.add(membro)
         db.session.commit()
-        return True, None
+        return sala, None
 
     except SQLAlchemyError as erro:
         db.session.rollback()
-        return None, erro
+        return None, str(erro)
 
 def atualizar_desconexao(user_id):
     if not user_id:
@@ -42,7 +42,7 @@ def atualizar_desconexao(user_id):
         db.session.commit()
     except SQLAlchemyError as erro:
         db.session.rollback()
-        return None, erro
+        return None, str(erro)
     return True, None
 
 def commit_mensagens(room_id, user_id, conteudo):
@@ -55,6 +55,6 @@ def commit_mensagens(room_id, user_id, conteudo):
         db.session.commit()
     except SQLAlchemyError as erro:
         db.session.rollback()
-        return None, erro
+        return None, str(erro)
     
     return True, None

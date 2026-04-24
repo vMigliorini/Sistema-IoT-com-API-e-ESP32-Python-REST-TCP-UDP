@@ -32,13 +32,14 @@ def handle_join(room_id):
 
     user_id = session.get("user_id")
 
-    _, erro = entrar_sala(room_id, user_id)
+    sala, erro = entrar_sala(room_id, user_id)
 
     if erro:
         emit("message", {"username": "Sistema", "data": erro})
         return
 
     session['room_id'] = room_id
+    session["room_name"] = sala.nome
     join_room(room_id)
 
     username = session.get("username")

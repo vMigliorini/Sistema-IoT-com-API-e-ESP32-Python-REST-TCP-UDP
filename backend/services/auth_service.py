@@ -28,7 +28,7 @@ def cadastrar(nome, email, senha, cargo):
 
     except SQLAlchemyError as erro:
         db.session.rollback()
-        return None, erro
+        return None, str(erro)
 
     return True, None
 
@@ -41,7 +41,7 @@ def logar(email, senha):
         stmt = select(Usuario).where(Usuario.email == email)
         usuario = db.session.execute(stmt).scalar()
     except SQLAlchemyError as erro:
-        return None, erro
+        return None, str(erro)
 
     if not usuario:
         return None, "Erro! Usuário ainda não cadastrado"

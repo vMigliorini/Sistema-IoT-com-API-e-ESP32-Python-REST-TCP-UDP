@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from sqlalchemy import select, func, update, delete
 from functools import wraps
-from services.chat_service import listar_nome_users, listar_salas, limpar_salas_vazias, criar_sala
+from services.chat_service import listar_nome_users, listar_salas, atualizar_status_sala_vazia, criar_sala
 from services.auth_service import cadastrar, logar
 
 views_bp = Blueprint('views', __name__)
@@ -13,7 +13,7 @@ def login_required(f):
     def decorated(*args, **kwargs):
         if 'user_id' not in session:
             if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({"ok": False, "erro": "Não autenticado"}), 401
+                return jsonify({"ok": False, "erro": "Não autenticado"}), 400
             return redirect(url_for('views.login'))
         return f(*args, **kwargs)
     return decorated
@@ -35,7 +35,7 @@ def criar_chat_room():
     sala, erro = criar_sala(nome_sala, session['user_id'])
     if erro:
         return jsonify({"ok": False, "erro": erro}), 400
-    session["room_name"] = sala.nome
+    session['room_name'] = sala.nome
     return jsonify({"ok": True, "nome": sala.nome, "room_id": sala.id})
 
 
@@ -46,7 +46,7 @@ def criar_chat_room():
 def listar_chat_rooms():
     salas, erro = listar_salas()
     if erro:
-        return jsonify({"erro": erro})
+        return jsonify({"erro": erro}), 400
     return jsonify([{"id_sala": id, "nome": nome, "usuarios": qtd} for id, nome, qtd in salas])
 
 
@@ -56,17 +56,17 @@ def listar_chat_rooms():
 def listar_usuarios_chat_room(room_id):
     usuarios, erro = listar_nome_users(room_id)
     if erro:
-        return jsonify({"ok": False, "Erro": erro})
+        return jsonify({"ok": False, "Erro": erro}), 400
     return jsonify({"ok": True, "usuarios": usuarios})
 
 
 
-@views_bp.route("/api/chat_rooms", methods=["DELETE"])
+@views_bp.route("/api/chat_rooms", methods=["PUT"])
 @login_required
 def limpar_chat_rooms():
-    erro = limpar_salas_vazias()
+    erro = atualizar_status_sala_vazia()
     if erro:
-        return jsonify({"ok": False, "erro": erro})
+        return jsonify({"ok": False, "erro": erro}), 400
     return jsonify({"ok": True})
 
 
@@ -86,7 +86,7 @@ def fazer_login():
     login, erro = logar(email, senha)
 
     if erro:
-        return jsonify({"ok": False, "erro": erro})
+        return jsonify({"ok": False, "erro": erro}), 400
     
     session['user_id'] = login.get("id")
     session['username'] = login.get("nome")
@@ -115,7 +115,7 @@ def fazer_cadastro():
     cadastro, erro = cadastrar(nome, email, senha, cargo)
 
     if erro:
-        return jsonify({"ok": False, "erro": erro})
+        return jsonify({"ok": False, "erro": erro}), 400
     
     if cadastro:
         return jsonify({"ok": True, "redirect": url_for('views.login')})

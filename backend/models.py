@@ -14,6 +14,10 @@ class StatusConexaoEnum(enum.Enum):
     conectado = "conectado"
     desconectado = "desconectado"
 
+class StatusSalaEnum(enum.Enum):
+    ativa = "ativa"
+    inativa = "inativa"
+
 class Usuario(db.Model):
     id         = db.Column(db.Integer, primary_key=True)
     nome       = db.Column(db.String(100))
@@ -38,8 +42,10 @@ class EspDevice(db.Model):
 class ChatRoom(db.Model):
     id         = db.Column(db.Integer, primary_key=True)
     nome       = db.Column(db.String(100))
+    status     = db.Column(db.Enum(StatusSalaEnum), default=StatusSalaEnum.ativa)
     mensagens  = db.relationship("ChatMessage", backref="sala")
     devices    = db.relationship("RoomDevice", backref="sala")
+    criado_em = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 class RoomDevice(db.Model):
     id        = db.Column(db.Integer, primary_key=True)

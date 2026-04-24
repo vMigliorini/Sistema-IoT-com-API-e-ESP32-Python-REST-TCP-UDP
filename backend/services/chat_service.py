@@ -1,7 +1,7 @@
 from extensions import db
 from sqlalchemy import select, func, update, delete
 from sqlalchemy.exc import SQLAlchemyError
-from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP, UsuarioChat, StatusConexaoEnum
+from models import Usuario, CargoEnum, EspDevice, ChatRoom, RoomDevice, ChatMessage, LeituraESP, UsuarioChat, StatusConexaoEnum, StatusSalaEnum
 
 def listar_nome_users(room_id):
 
@@ -16,7 +16,7 @@ def listar_nome_users(room_id):
             .all()
         )
     except SQLAlchemyError as erro:
-        return None, erro
+        return None, str(erro)
 
     lista_de_nomes = [usuario[0] for usuario in resultados]
 
@@ -27,21 +27,25 @@ def listar_salas():
 
     try:
         contagens = (
-            db.session.query(ChatRoom.id, ChatRoom.nome, func.count(UsuarioChat.id_usuario))
-            .outerjoin(UsuarioChat, UsuarioChat.room_id == ChatRoom.id)
-            .filter(
-                (UsuarioChat.status == StatusConexaoEnum.conectado) | 
-                (UsuarioChat.status == None)
+            db.session.query(
+                ChatRoom.id, 
+                ChatRoom.nome, 
+                func.count(UsuarioChat.id_usuario)
             )
-            .group_by(ChatRoom.id)
+            .join(UsuarioChat, UsuarioChat.room_id == ChatRoom.id)
+            .filter(
+                ChatRoom.status == StatusSalaEnum.ativa,
+                UsuarioChat.status == StatusConexaoEnum.conectado
+            )
+            .group_by(ChatRoom.id, ChatRoom.nome)
             .all()
         )
     except SQLAlchemyError as erro:
-        return None, erro
+        return None, str(erro)
     return contagens, None
 
 
-def limpar_salas_vazias():
+def atualizar_status_sala_vazia():
     try:
         rooms_vazias = [
             row.id for row in (
@@ -58,12 +62,12 @@ def limpar_salas_vazias():
             return None
 
         db.session.execute(delete(UsuarioChat).where(UsuarioChat.room_id.in_(rooms_vazias)))
-        db.session.execute(delete(ChatRoom).where(ChatRoom.id.in_(rooms_vazias)))
+        db.session.execute(update(ChatRoom).where(ChatRoom.id.in_(rooms_vazias)).values(status=StatusSalaEnum.inativa))
         db.session.commit()
 
     except SQLAlchemyError as erro:
         db.session.rollback()
-        return erro
+        return str(erro)
     
     return None
 
@@ -74,7 +78,7 @@ def criar_sala(nome_sala, user_id):
     if not nome_sala:
         return None, "Campo nome da sala obrigatório"
 
-    if db.session.execute(select(ChatRoom).where(ChatRoom.nome == nome_sala)).scalar():
+    if db.session.execute(select(ChatRoom).where(ChatRoom.nome == nome_sala, ChatRoom.status == StatusSalaEnum.ativa)).scalar():
         return None, "Esse nome de sala já existe"
 
     try:
@@ -88,6 +92,6 @@ def criar_sala(nome_sala, user_id):
 
     except SQLAlchemyError as erro:
         db.session.rollback()
-        return None, erro
+        return None, str(erro)
 
     return novo, None
