@@ -35,6 +35,7 @@ def criar_chat_room():
     sala, erro = criar_sala(nome_sala, session['user_id'])
     if erro:
         return jsonify({"ok": False, "erro": erro}), 400
+    session["room_name"] = sala.nome
     return jsonify({"ok": True, "nome": sala.nome, "room_id": sala.id})
 
 

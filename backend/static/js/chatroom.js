@@ -166,6 +166,7 @@ async function desconectar_socket() {
     }
     sessionStorage.removeItem("room_id")
     console.log("removido da sessao")
+    sessionStorage.removeItem("room_name")
     document.getElementById("mensagem").innerHTML = ""
 }
 

@@ -42,7 +42,8 @@ def handle_join(room_id):
     join_room(room_id)
 
     username = session.get("username")
-    emit("message", {"username": "Sistema", "data": f"{username} entrou no chat"}, to=room_id)
+    chat = session.get("room_name")
+    emit("message", {"username": "Sistema", "data": f"{username} entrou em #{chat}"}, to=room_id)
 
 @socketio.on('message')
 @socket_login_required
