@@ -5,4 +5,5 @@ pip install flask-bcrypt
 pip install flask-cors
 pip install psycopg2-binary
 pip install python-dotenv
-py -m pip install eventlet
+pip install eventlet
+pip install "python-socketio[client]"
