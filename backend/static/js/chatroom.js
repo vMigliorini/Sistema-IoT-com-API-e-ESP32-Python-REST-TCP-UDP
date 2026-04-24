@@ -1,6 +1,6 @@
 var socket = null;
 
-window.onload = async function() {
+window.onload = async function carregamento_pagina() {
     const dialog = document.getElementById('pop_up_adiocionar_chat');
     dialog.close()
     const dados_user = await fetch("/me")
@@ -18,14 +18,19 @@ window.onload = async function() {
     }
 }
 
-async function refresh(){
-    await fetch("/api/chat_rooms", {
+async function refresh_chats(){
+    const response = await fetch("/api/chat_rooms", {
         method: "DELETE",
         headers: {
             'Content-Type': 'application/json'
         }
     })
-    window.location.reload();
+    const apagado = await response.json()
+    if (!apagado.ok) {
+        console.log(apagado.erro)
+        return
+    }
+    await inserir_chatroom()
 }
 
 async function abrir_popup_add_chat() {
@@ -60,7 +65,6 @@ async function criar_chatroom() {
     }
     else{
         await fechar_popup_add_chat()
-        desconectar()
         await entrar_chatroom(sala.room_id)
         await inserir_chatroom()
     }
@@ -100,7 +104,7 @@ async function inserir_chatroom() {
 
 async function entrar_chatroom(room_id){
 
-    desconectar();
+    desconectar_socket();
 
     sessionStorage.setItem("room_id", room_id);
 
@@ -116,7 +120,7 @@ async function entrar_chatroom(room_id){
     })
 
     socket.on("disconnect", function(){
-        desconectar()
+        desconectar_socket()
     })
 
     socket.on("message", function(data) {
@@ -154,13 +158,27 @@ function sendMessage(event){
     mensagem = ""
 }
 
-async function desconectar() {
+async function desconectar_socket() {
     if (socket) {
         socket.disconnect()
+        console.log("Desconectado")
         socket = null
     }
     sessionStorage.removeItem("room_id")
+    console.log("removido da sessao")
     document.getElementById("mensagem").innerHTML = ""
+}
+
+async function desconectar_botao() {
+    if (socket) {
+        socket.disconnect()
+        console.log("Desconectado")
+        socket = null
+    }
+    sessionStorage.removeItem("room_id")
+    console.log("removido da sessao")
+    document.getElementById("mensagem").innerHTML = ""
+    await inserir_chatroom()
 }
 
 async function usuarios_conectados(room_id) {

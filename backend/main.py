@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 app.secret_key = os.environ.get('SECRET_KEY', 'chave-so-pra-dev')
 
-socketio.init_app(app)
+socketio.init_app(app, async_mode='eventlet', cors_allowed_origins="*")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://neondb_owner:npg_nQasPZdpo9A6@ep-odd-scene-acsy6w3o.sa-east-1.aws.neon.tech/neondb?sslmode=require"
 
