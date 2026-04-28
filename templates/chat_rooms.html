@@ -1,121 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
+{% extends "base.html" %}
+
+    {% block head %}
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-        <link rel="stylesheet" href="../static/style-chatroom.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style-chatroom.css') }}">        
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script defer src="{{ url_for('static', filename='js/chatroom.js') }}"></script>
         <title>Chat Rooms</title>
-    </head>
-
-    <dialog id="pop_up_adiocionar_chat">
-        <div class="pop-up-adiocionar-chat">
-            <div class="container-titulo-pupup">
-                <h2>Adicionar chat room</h2>    
-            </div>
-            <div class="container-inputs-sala">
-                <input name="nome-sala" id="nome-sala" onkeydown="if(event.key === 'Enter') criar_chatroom()" placeholder="Nome da sala">
-            </div>
-            <div class="" id="campo-retorno-erros">
-    
-            </div>
-            <div class="container-botoes-popup">
-                <button id="fechar" onclick="fechar_popup_add_chat()">Fechar</button>
-                <button id="criar-sala" onclick="criar_chatroom()" >Criar sala</button>
-            </div>
-        </div>
-    </dialog>
-
-    <body>
-        <div class="container-principal">
-            
-
-            <div class="container-secao-esquerda-pagina">
-
-                <div class="container-perfil">
-                    <div class="foto">
-                        <i class="fa-solid fa-circle-user"></i>
-                    </div>
-                    <div class="nome-cargo">
-                        <div class="nome" id="nome-user-perfil">
-                            
-                        </div>
-                        <div class="cargo" id="cargo-user-perfil">
-                            
-                        </div>
-                    </div>
+    {% endblock %}
+    {% block content %}
+        <dialog id="pop_up_adiocionar_chat">
+            <div class="pop-up-adiocionar-chat">
+                <div class="container-titulo-pupup">
+                    <h2>Adicionar chat room</h2>    
                 </div>
-
-                <div class="container-icone-refresh">
-                    <button type="button" onclick="refresh_chats()"><i class="fa-solid fa-arrows-rotate"></i></button>
+                <div class="container-inputs-sala">
+                    <input name="nome-sala" id="nome-sala" onkeydown="if(event.key === 'Enter') criar_chatroom()" placeholder="Nome da sala">
                 </div>
-
-                <div class="container-multi-chats" id="container-multi-chats">
-
-
-                </div>
-
-                <div class="container-novo-chat">
-                    <div class="figura">
-                        <button type="button" onclick="abrir_popup_add_chat()"><i class="fa-solid fa-circle-plus"></i></button>
-                    </div>
-                    <div class="texto">
-                        Adicionar chat
-                    </div>
-                </div>
-
-
-            </div>
-            <div class="container-secao-direita-pagina">
-
-                <div class="container-dispositivos-conectados">
-
-                    <div class="dispositivo-informacoes">
-                        <div class="dispositivo-icone">
-                            <i class="fa-solid fa-microchip"></i>
-                        </div>
-                        <div class="dispositivo-nome">
-                            ESP32: nome
-                        </div>
-                    </div>
-
-                </div>
-                <div class="container-chat" id="mensagem">
-                    
-                </div>
-
-                <div class="container-input-mensagem">
-                    <div class="input-mensagem">
-                        <input name="mensagem-digitada" id="mensagem-digitada" placeholder="Conversar" onkeydown="if(event.key === 'Enter') sendMessage(event)">
-                    </div>
-                    <div class="botao-enviar">
-                        <button type="button" onclick="sendMessage(event)"><i class="fa-solid fa-circle-arrow-up"></i></button>
-                    </div>
-                </div>
-
-            </div>
-            <div class="container-secao-usuarios-conectados-chat">
-                <div class="container-usuarios-conectados">
-                    <div class="titulo-usuarios-conectados">
-                        Usuários conectados
-                    </div>
-                    
-                </div>
-                <div class="informacoes-usuario-conectado" id="usuarios-conectados">
-
-                    
-
-                </div>
-                <div class="container-botao-desconectar">
-                    <button type="button" onclick="desconectar_botao()">Desconectar</button>
-                </div>
-
-            </div>
-
-
-        </div>
+                <div class="" id="campo-retorno-erros">
         
-    </body>
-</html>
+                </div>
+                <div class="container-botoes-popup">
+                    <button id="fechar" onclick="fechar_popup_add_chat()">Fechar</button>
+                    <button id="criar-sala" onclick="criar_chatroom()" >Criar sala</button>
+                </div>
+            </div>
+        </dialog>
+
+        <body>
+            <div class="container-principal">
+                
+
+                <div class="container-secao-esquerda-pagina">
+
+                    <div class="container-perfil">
+                        <div class="foto">
+                            <i class="fa-solid fa-circle-user"></i>
+                        </div>
+                        <div class="nome-cargo">
+                            <div class="nome" id="nome-user-perfil">
+                                
+                            </div>
+                            <div class="cargo" id="cargo-user-perfil">
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container-icone-refresh">
+                        <button type="button" onclick="refresh_chats()"><i class="fa-solid fa-arrows-rotate"></i></button>
+                    </div>
+
+                    <div class="container-multi-chats" id="container-multi-chats">
+
+
+                    </div>
+
+                    <div class="container-novo-chat">
+                        <div class="figura">
+                            <button type="button" onclick="abrir_popup_add_chat()"><i class="fa-solid fa-circle-plus"></i></button>
+                        </div>
+                        <div class="texto">
+                            Adicionar chat
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="container-secao-direita-pagina">
+
+                    <div class="container-dispositivos-conectados">
+
+                        <div class="dispositivo-informacoes">
+                            <div class="dispositivo-icone">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <div class="dispositivo-nome">
+                                ESP32: nome
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="container-chat" id="mensagem">
+                        
+                    </div>
+
+                    <div class="container-input-mensagem">
+                        <div class="input-mensagem">
+                            <input name="mensagem-digitada" id="mensagem-digitada" placeholder="Conversar" onkeydown="if(event.key === 'Enter') sendMessage(event)">
+                        </div>
+                        <div class="botao-enviar">
+                            <button type="button" onclick="sendMessage(event)"><i class="fa-solid fa-circle-arrow-up"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="container-secao-usuarios-conectados-chat">
+                    <div class="container-usuarios-conectados">
+                        <div class="titulo-usuarios-conectados">
+                            Usuários conectados
+                        </div>
+                        
+                    </div>
+                    <div class="informacoes-usuario-conectado" id="usuarios-conectados">
+
+                        
+
+                    </div>
+                    <div class="container-botao-desconectar">
+                        <button type="button" onclick="desconectar_botao()">Desconectar</button>
+                    </div>
+
+                </div>
+
+
+            </div>
+            
+        </body>
+    {% endblock %}

@@ -5,9 +5,10 @@ from views import views_bp
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+basedir = os.path.abspath(os.path.dirname(__file__))    
+load_dotenv(os.path.join(basedir, '.env.local'))
 
-NEON_DB_URI = os.getenv("NEON_DB_URI")
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -15,9 +16,9 @@ app.secret_key = os.environ.get('SECRET_KEY')
 
 socketio.init_app(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = NEON_DB_URI
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('NEON_DB_URI')
 
-CORS(app, origins=[os.getenv("FRONTEND_URL")])
+CORS(app, origins=[os.getenv('FRONTEND_URL')])
 
 db.init_app(app)
 bcrypt.init_app(app)

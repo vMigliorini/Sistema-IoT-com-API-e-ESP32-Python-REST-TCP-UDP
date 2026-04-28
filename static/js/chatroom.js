@@ -12,10 +12,8 @@ window.onload = async function() {
     document.getElementById("nome-user-perfil").innerHTML = user.nome
     document.getElementById("cargo-user-perfil").innerHTML = user.cargo
 
-    const saved_room_id = sessionStorage.getItem("room_id");
-    if (saved_room_id) {
-        await entrar_chatroom(parseInt(saved_room_id));
-    }
+    await refresh_chats()
+
 }
 
 async function refresh_chats(){
@@ -49,6 +47,10 @@ async function criar_chatroom() {
     if (nome_sala == ""){
         document.getElementById("campo-retorno-erros").innerHTML = "Erro! sala sem nome"
         return
+    }
+    const room_id = sessionStorage.getItem("room_id")
+    if (room_id){
+        await desconectar_socket()
     }
     const response = await fetch("/api/chat_rooms", {
         method:"POST",
@@ -176,6 +178,10 @@ async function desconectar_botao() {
         socket = null
     }
     const saved_room_id = sessionStorage.getItem("room_id");
+    if (!saved_room_id || isNaN(saved_room_id)) {
+        console.error("Erro: ID da sala inválido!", saved_room_id);
+        return;
+    }
     await usuarios_conectados(parseInt(saved_room_id))
     sessionStorage.removeItem("room_id")
     document.getElementById("mensagem").innerHTML = ""
