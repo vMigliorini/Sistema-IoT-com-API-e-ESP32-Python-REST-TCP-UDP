@@ -173,7 +173,6 @@ async function desconectar_socket() {
 async function desconectar_botao() {
     if (socket) {
         socket.disconnect()
-        console.log("Desconectado")
         socket = null
     }
     const saved_room_id = sessionStorage.getItem("room_id");

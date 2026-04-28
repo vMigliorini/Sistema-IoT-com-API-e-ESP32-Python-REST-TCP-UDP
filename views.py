@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
-from sqlalchemy import select, func, update, delete
 from functools import wraps
 from services.chat_service import listar_nome_users, listar_salas, atualizar_status_sala_vazia, criar_sala
 from services.auth_service import cadastrar, logar
